@@ -10,6 +10,13 @@ namespace DBUtil
 {
     public partial interface ISession
     {
+        #region SQL打印
+        /// <summary>
+        /// SQL打印
+        /// </summary>
+        Action<string, DbParameter[]> OnExecuting { get; set; }
+        #endregion
+
         #region 执行简单SQL语句
 
         /// <summary>

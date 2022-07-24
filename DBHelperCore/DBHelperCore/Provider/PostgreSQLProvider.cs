@@ -64,9 +64,9 @@ namespace DBUtil
         #endregion
 
         #region 生成 DbParameter
-        public DbParameter GetDbParameter(string name, object vallue)
+        public DbParameter GetDbParameter(string name, object value)
         {
-            return new NpgsqlParameter(name, vallue);
+            return new NpgsqlParameter(name, value);
         }
         #endregion
 
@@ -127,16 +127,14 @@ namespace DBUtil
         #region ForStartsWith
         public SqlValue ForStartsWith(string value)
         {
-            //todo:ForStartsWith
-            throw new NotImplementedException();
+            return new SqlValue("concat({0},'%')", value);
         }
         #endregion
 
         #region ForEndsWith
         public SqlValue ForEndsWith(string value)
         {
-            //todo:ForEndsWith
-            throw new NotImplementedException();
+            return new SqlValue("concat('%',{0})", value);
         }
         #endregion
 
@@ -150,8 +148,14 @@ namespace DBUtil
         #region ForList
         public SqlValue ForList(IList list)
         {
-            //todo:ForList
-            throw new NotImplementedException();
+            List<string> argList = new List<string>();
+            for (int i = 0; i < list.Count; i++)
+            {
+                argList.Add("@inParam" + i);
+            }
+            string args = string.Join(",", argList);
+
+            return new SqlValue("(" + args + ")", list);
         }
         #endregion
 

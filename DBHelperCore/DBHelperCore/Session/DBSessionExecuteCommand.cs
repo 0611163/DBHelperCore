@@ -11,6 +11,13 @@ namespace DBUtil
 {
     public partial class DBSession : ISession
     {
+        #region SQL打印
+        /// <summary>
+        /// SQL打印
+        /// </summary>
+        public Action<string, DbParameter[]> OnExecuting { get; set; }
+        #endregion
+
         #region  执行简单SQL语句
 
         #region Exists 是否存在
@@ -20,6 +27,7 @@ namespace DBUtil
         public bool Exists(string sqlString)
         {
             SqlFilter(ref sqlString);
+            OnExecuting?.Invoke(sqlString, null);
             if (_conn.State != ConnectionState.Open) _conn.Open();
             using (DbCommand cmd = _provider.GetCommand(sqlString, _conn))
             {
@@ -44,6 +52,7 @@ namespace DBUtil
         public async Task<bool> ExistsAsync(string sqlString)
         {
             SqlFilter(ref sqlString);
+            OnExecuting?.Invoke(sqlString, null);
             if (_conn.State != ConnectionState.Open)
             {
                 await _conn.OpenAsync();
@@ -74,6 +83,7 @@ namespace DBUtil
         public int ExecuteSql(string sqlString)
         {
             SqlFilter(ref sqlString);
+            OnExecuting?.Invoke(sqlString, null);
             if (_conn.State != ConnectionState.Open) _conn.Open();
             using (DbCommand cmd = _provider.GetCommand(sqlString, _conn))
             {
@@ -93,6 +103,7 @@ namespace DBUtil
         public async Task<int> ExecuteSqlAsync(string sqlString)
         {
             SqlFilter(ref sqlString);
+            OnExecuting?.Invoke(sqlString, null);
             if (_conn.State != ConnectionState.Open)
             {
                 await _conn.OpenAsync();
@@ -116,6 +127,7 @@ namespace DBUtil
         public T GetSingle<T>(string sqlString)
         {
             SqlFilter(ref sqlString);
+            OnExecuting?.Invoke(sqlString, null);
             if (_conn.State != ConnectionState.Open) _conn.Open();
             using (DbCommand cmd = _provider.GetCommand(sqlString, _conn))
             {
@@ -142,6 +154,7 @@ namespace DBUtil
         public object GetSingle(string sqlString)
         {
             SqlFilter(ref sqlString);
+            OnExecuting?.Invoke(sqlString, null);
             if (_conn.State != ConnectionState.Open) _conn.Open();
             using (DbCommand cmd = _provider.GetCommand(sqlString, _conn))
             {
@@ -168,6 +181,7 @@ namespace DBUtil
         public async Task<T> GetSingleAsync<T>(string sqlString)
         {
             SqlFilter(ref sqlString);
+            OnExecuting?.Invoke(sqlString, null);
             if (_conn.State != ConnectionState.Open) _conn.Open();
             using (DbCommand cmd = _provider.GetCommand(sqlString, _conn))
             {
@@ -194,6 +208,7 @@ namespace DBUtil
         public async Task<object> GetSingleAsync(string sqlString)
         {
             SqlFilter(ref sqlString);
+            OnExecuting?.Invoke(sqlString, null);
             if (_conn.State != ConnectionState.Open) _conn.Open();
             using (DbCommand cmd = _provider.GetCommand(sqlString, _conn))
             {
@@ -221,6 +236,7 @@ namespace DBUtil
         public DataSet Query(string sqlString)
         {
             SqlFilter(ref sqlString);
+            OnExecuting?.Invoke(sqlString, null);
             if (_conn.State != ConnectionState.Open) _conn.Open();
             using (DbCommand cmd = _provider.GetCommand(sqlString, _conn))
             {
@@ -240,6 +256,7 @@ namespace DBUtil
         private DbDataReader ExecuteReader(string sqlString)
         {
             SqlFilter(ref sqlString);
+            OnExecuting?.Invoke(sqlString, null);
             if (_conn.State != ConnectionState.Open) _conn.Open();
             using (DbCommand cmd = _provider.GetCommand(sqlString, _conn))
             {
@@ -261,6 +278,7 @@ namespace DBUtil
         /// <returns>影响的记录数</returns>
         public int ExecuteSql(string SQLString, params DbParameter[] cmdParms)
         {
+            OnExecuting?.Invoke(SQLString, cmdParms);
             using (DbCommand cmd = _provider.GetCommand())
             {
                 PrepareCommand(cmd, _conn, _tran, SQLString, cmdParms);
@@ -279,6 +297,7 @@ namespace DBUtil
         /// <returns>影响的记录数</returns>
         public async Task<int> ExecuteSqlAsync(string SQLString, params DbParameter[] cmdParms)
         {
+            OnExecuting?.Invoke(SQLString, cmdParms);
             using (DbCommand cmd = _provider.GetCommand())
             {
                 await PrepareCommandAsync(cmd, _conn, _tran, SQLString, cmdParms);
@@ -299,6 +318,7 @@ namespace DBUtil
         /// <returns>DataSet</returns>
         public DataSet Query(string sqlString, params DbParameter[] cmdParms)
         {
+            OnExecuting?.Invoke(sqlString, cmdParms);
             using (DbCommand cmd = _provider.GetCommand())
             {
                 PrepareCommand(cmd, _conn, null, sqlString, cmdParms);
@@ -322,6 +342,7 @@ namespace DBUtil
         /// <returns>IDataReader</returns>
         private DbDataReader ExecuteReader(string sqlString, params DbParameter[] cmdParms)
         {
+            OnExecuting?.Invoke(sqlString, cmdParms);
             using (DbCommand cmd = _provider.GetCommand())
             {
                 PrepareCommand(cmd, _conn, null, sqlString, cmdParms);
@@ -340,6 +361,7 @@ namespace DBUtil
         /// <returns>IDataReader</returns>
         private async Task<DbDataReader> ExecuteReaderAsync(string sqlString, params DbParameter[] cmdParms)
         {
+            OnExecuting?.Invoke(sqlString, cmdParms);
             using (DbCommand cmd = _provider.GetCommand())
             {
                 await PrepareCommandAsync(cmd, _conn, null, sqlString, cmdParms);

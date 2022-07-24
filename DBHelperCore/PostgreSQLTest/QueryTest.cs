@@ -55,6 +55,10 @@ namespace PostgreSQLTest
 
                     sql.Append(@" and t.""RealName"" like concat('%',@RealName,'%')", "测试");
 
+                    sql.Append(@" and t.""CreateTime"" < @startTime ", sql.ForDateTime(DateTime.Now));
+
+                    sql.Append(@" and t.""Id"" in @ids ", sql.ForList(new List<int>() { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 }));
+
                     string orderby = @" order by t.""Id"" ";
                     pageModel = session.FindPageBySql<SysUser>(sql.SQL, orderby, pageModel.PageSize, pageModel.CurrentPage, sql.Params);
                     List<SysUser> list = pageModel.GetResult<SysUser>();

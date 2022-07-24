@@ -64,9 +64,9 @@ namespace DBUtil
         #endregion
 
         #region 生成 DbParameter
-        public DbParameter GetDbParameter(string name, object vallue)
+        public DbParameter GetDbParameter(string name, object value)
         {
-            return new MySqlParameter(name, vallue);
+            return new MySqlParameter(name, value);
         }
         #endregion
 
@@ -151,7 +151,7 @@ namespace DBUtil
             List<string> argList = new List<string>();
             for (int i = 0; i < list.Count; i++)
             {
-                argList.Add("@id" + i);
+                argList.Add("@inParam" + i);
             }
             string args = string.Join(",", argList);
 

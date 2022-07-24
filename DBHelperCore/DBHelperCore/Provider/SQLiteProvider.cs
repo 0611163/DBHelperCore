@@ -64,9 +64,9 @@ namespace DBUtil
         #endregion
 
         #region 生成 DbParameter
-        public DbParameter GetDbParameter(string name, object vallue)
+        public DbParameter GetDbParameter(string name, object value)
         {
-            return new SQLiteParameter(name, vallue);
+            return new SQLiteParameter(name, value);
         }
         #endregion
 
@@ -119,40 +119,42 @@ namespace DBUtil
         #region ForContains
         public SqlValue ForContains(string value)
         {
-            //todo:ForContains
-            throw new NotImplementedException();
+            return new SqlValue(" '%' || {0} || '%' ", value);
         }
         #endregion
 
         #region ForStartsWith
         public SqlValue ForStartsWith(string value)
         {
-            //todo:ForStartsWith
-            throw new NotImplementedException();
+            return new SqlValue(" {0} || '%' ", value);
         }
         #endregion
 
         #region ForEndsWith
         public SqlValue ForEndsWith(string value)
         {
-            //todo:ForEndsWith
-            throw new NotImplementedException();
+            return new SqlValue(" '%' || {0} ", value);
         }
         #endregion
 
         #region ForDateTime
         public SqlValue ForDateTime(DateTime dateTime)
         {
-            //todo:ForDateTime
-            throw new NotImplementedException();
+            return new SqlValue(" strftime({0}, '%Y-%m-%d %H:%M:%S') ", dateTime.ToString("yyyy-MM-dd HH:mm:ss"));
         }
         #endregion
 
         #region ForList
         public SqlValue ForList(IList list)
         {
-            //todo:ForList
-            throw new NotImplementedException();
+            List<string> argList = new List<string>();
+            for (int i = 0; i < list.Count; i++)
+            {
+                argList.Add(":inParam" + i);
+            }
+            string args = string.Join(",", argList);
+
+            return new SqlValue("(" + args + ")", list);
         }
         #endregion
 
